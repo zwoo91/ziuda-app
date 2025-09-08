@@ -1,23 +1,21 @@
 // app/api/[...nextauth]/route.ts
-import NextAuth from "next-auth";
+import NextAuth, { type NextAuthConfig } from "next-auth";
 import Kakao from "next-auth/providers/kakao";
 import Naver from "next-auth/providers/naver";
 
-const authOptions = {
+const authConfig: NextAuthConfig = {
+  // secret은 ENV(AUTH_SECRET)에 넣어두면 됩니다. (옵션으로 명시도 가능)
   secret: process.env.AUTH_SECRET,
   providers: [
     Kakao({
-      clientId: process.env.AUTH_KAKAO_ID as string,
-      clientSecret: process.env.AUTH_KAKAO_SECRET as string,
+      clientId: process.env.AUTH_KAKAO_ID!,
+      clientSecret: process.env.AUTH_KAKAO_SECRET!,
     }),
     Naver({
-      clientId: process.env.AUTH_NAVER_ID as string,
-      clientSecret: process.env.AUTH_NAVER_SECRET as string,
+      clientId: process.env.AUTH_NAVER_ID!,
+      clientSecret: process.env.AUTH_NAVER_SECRET!,
     }),
   ],
-} satisfies Parameters<typeof NextAuth>[0];
+};
 
-const { handlers } = NextAuth(authOptions);
-export const { GET, POST } = handlers;
-
-
+export const { handlers: { GET, POST } } = NextAuth(authConfig);
